@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>Windows</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+	<button id="btn">Stvori novi prozor! </button>
+	visina = <input type="text" id="visina" />
+	širina = <input type="text" id="sirina" />
+
+</div></br></br>
+	<button id="preimenuj">Preimenuj prozor!</button> novo ime = <input type="text" id="ime"></input></br></br>
+	Odaberi aktivni prozor: 
+	<select id = "mySelect" onchange="changeFunc();">
+	</select></br></br>
+	
+
+<canvas id="mycanvas" width="600" height="600" style="border:1px solid #000000; ">
+</canvas>
+<script>
+var i = 0;
+var L =[];
+var trenutnoAktivan = i;
+$( document ).ready( function() {
+	
+	$( "#btn" ).on( "click", provjeri );
+	
+} );
+
+$( document ).ready( function() {
+	
+	$( "#preimenuj" ).on( "click", Preimenuj );
+	
+} );
+
+function provjeri() {  				//provjerava ispravnost unosa
+	var visina = Number($("#visina").val()), sirina = Number($("#sirina").val()); 
+	if(visina < 30 || sirina < 30)
+	{alert("Visina i sirina prozora mora biti barem 30 px");}
+}
+
+function Preimenuj() {  		
+	
+	var x = document.getElementById("ime").value;
+	var brojProzora= trenutnoAktivan +1;
+	//alert ("Prozor " + brojProzora + " ce se preimenovati u "  + x );
+	L[trenutnoAktivan].ime = x;
+
+	context.beginPath();
+	context.fillStyle = "white";
+	context.fillRect(L[trenutnoAktivan].Xkoordinata, L[trenutnoAktivan].Ykoordinata,L[trenutnoAktivan].sirina, L[trenutnoAktivan].visina);
+	context.fillStyle = "black";
+	context.rect(L[trenutnoAktivan].Xkoordinata, L[trenutnoAktivan].Ykoordinata,L[trenutnoAktivan].sirina, L[trenutnoAktivan].visina);
+	context.fillStyle = "blue";
+	context.fillRect(L[trenutnoAktivan].Xkoordinata, L[trenutnoAktivan].Ykoordinata,L[trenutnoAktivan].sirina, 30);
+	context.fillStyle = "black";
+	context.font = "12pt Verdana";
+	context.fillText(x ,L[trenutnoAktivan].Xkoordinata+5,L[trenutnoAktivan].Ykoordinata+20)
+	context.fillStyle = "#FF0000";
+	context.fillRect(L[trenutnoAktivan].Xkoordinata + L[trenutnoAktivan].sirina -30 ,L[trenutnoAktivan].Ykoordinata,30,30);
+	context.fillStyle = "black";
+	context.font = "30pt Verdana";
+	context.fillText("x ",L[trenutnoAktivan].Xkoordinata + L[trenutnoAktivan].sirina -25 ,L[trenutnoAktivan].Ykoordinata+25)
+	context.stroke();
+	
+}
+
+var canvas=document.getElementById('mycanvas');
+var context=canvas.getContext('2d');
+
+function drawRec(x, y){				 //za crtanje prozora
+    context.beginPath();
+	i ++;							//povecava broj prozora za 1 svaki put kad se odobri novo crtanje
+	context.fillStyle = "white";
+	context.fillRect(x, y, Number($("#sirina").val()), Number($("#visina").val()));
+	context.fillStyle = "black";
+    context.rect(x, y, Number($("#sirina").val()), Number($("#visina").val()));
+	context.fillStyle = "blue";
+	context.fillRect(x  ,y,Number($("#sirina").val()),30);
+	context.fillStyle = "black";
+	context.font = "12pt Verdana";
+	context.fillText("Prozor " + i ,x+5,y+20)
+	context.fillStyle = "#FF0000";
+	context.fillRect(x + Number($("#sirina").val()) -30 ,y,30,30);
+	context.fillStyle = "black";
+	context.font = "30pt Verdana";
+	context.fillText("x ",x + Number($("#sirina").val()) -25 ,y+25)
+    context.stroke();
+	var obj = { broj : i , ime: "Prozor " + i , Xkoordinata : x, Ykoordinata: y, visina: Number($("#visina").val()), sirina : Number($("#sirina").val())};
+	L.push(obj);  	
+	var x = document.getElementById("mySelect");   //dodavanje prozora pod option 
+    var c = document.createElement("option");
+    c.text = "Prozor " + i;
+    x.options.add(c, i-1);
+	console.log(i-1);
+	for (var j =0; j< L.length ; j++)
+	{
+		console.log(L[j]);
+	}
+	
+}
+
+function changeFunc() {
+    var selectBox = document.getElementById("mySelect");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+	var selectedIndex = selectBox.selectedIndex;
+   // alert(selectedIndex);
+	var zaIspis = selectedIndex+1;
+	var pomocni = L[selectedIndex];
+	trenutnoAktivan = selectedIndex;
+	for (var n = 0 ; n < L.length; n++)
+	{
+		var nn = n +1;
+		context.beginPath();
+		context.fillStyle = "white";
+		context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+		context.fillStyle = "black";
+		context.rect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+		context.fillStyle = "gray";
+		context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, 30);
+		context.fillStyle = "black";
+		context.font = "12pt Verdana";
+		context.fillText(L[n].ime ,L[n].Xkoordinata+5,L[n].Ykoordinata+20)
+		context.fillStyle = "#FF0000";
+		context.fillRect(L[n].Xkoordinata + L[n].sirina -30 ,L[n].Ykoordinata,30,30);
+		context.fillStyle = "black";
+		context.font = "30pt Verdana";
+		context.fillText("x ",L[n].Xkoordinata + L[n].sirina -25 ,L[n].Ykoordinata+25)
+		context.stroke();
+	}
+	console.log(pomocni);
+	context.beginPath();
+	
+	context.fillStyle = "white";
+	context.fillRect(pomocni.Xkoordinata, pomocni.Ykoordinata, pomocni.sirina,  pomocni.visina);
+	context.fillStyle = "black";
+    context.rect(pomocni.Xkoordinata, pomocni.Ykoordinata, pomocni.sirina,  pomocni.visina);
+	context.fillStyle = "blue";
+	context.fillRect(pomocni.Xkoordinata  ,pomocni.Ykoordinata, pomocni.sirina,30);
+	
+	context.fillStyle = "black";
+	context.font = "12pt Verdana";
+	context.fillText("Prozor " + zaIspis,pomocni.Xkoordinata+5,pomocni.Ykoordinata+20)
+	context.fillStyle = "#FF0000";
+	context.fillRect(pomocni.Xkoordinata + pomocni.sirina -30 ,pomocni.Ykoordinata,30,30);
+	context.fillStyle = "black";
+	context.font = "30pt Verdana";
+	context.fillText("x ",pomocni.Xkoordinata + pomocni.sirina -25 ,pomocni.Ykoordinata+25)
+	context.stroke();
+
+	
+   }
+
+function getPosition(e) {			// za koordinate x,y klika
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
+
+canvas.addEventListener('click', function(e) {			// dodavanje event listener klika na canvas
+    var position = getPosition(e);
+	if(Number($("#visina").val()) >= 30 && Number($("#sirina").val()) >= 30)  // ako je unos ispravan
+	{ 
+		if ( (i>0) && (position.x >= (L[i-1].Xkoordinata + L[i-1].sirina -30)) &&  (position.x <= (L[i-1].Xkoordinata + L[i-1].sirina)) 
+		&& ( position.y >= L[i-1].Ykoordinata ) && ( position.y <= L[i-1].Ykoordinata + 30)) //provjera za brisanje
+		{	console.log(i-1);
+			context.fillStyle="white";
+			context.fillRect(0,0,600,600);
+			L.splice(i-1, 1)
+			var x = document.getElementById("mySelect");  
+		
+			x.options.remove(i-1);
+			
+			i--;
+			for (var n = 0 ; n < L.length; n++)
+			{
+				var nn = n +1;
+				context.beginPath();
+				context.fillStyle = "white";
+				context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+				context.fillStyle = "black";
+				context.rect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+				context.fillStyle = "gray";
+				context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, 30);
+				context.fillStyle = "black";
+				context.font = "12pt Verdana";
+				context.fillText(L[n].ime ,L[n].Xkoordinata+5,L[n].Ykoordinata+20)
+				context.fillStyle = "#FF0000";
+				context.fillRect(L[n].Xkoordinata + L[n].sirina -30 ,L[n].Ykoordinata,30,30);
+				context.fillStyle = "black";
+				context.font = "30pt Verdana";
+				context.fillText("x ",L[n].Xkoordinata + L[n].sirina -25 ,L[n].Ykoordinata+25)
+				context.stroke();
+			}
+			
+		}
+		else if(Number($("#sirina").val())>600 || (Number($("#sirina").val()) +position.x ) > 600 || (Number($("#visina").val()) +position.y ) > 600)
+		{
+			alert ("Ne stane u canvas!");		//provjerava je li dopusteno crtanje 
+		}
+		
+		else
+		{
+			if ( i > 0 )		
+			{
+				for (var n = 0 ; n < L.length; n++)
+				{
+					var nn = n +1;
+					context.beginPath();
+					context.fillStyle = "white";
+					context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+					context.fillStyle = "black";
+					context.rect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, L[n].visina);
+					context.fillStyle = "gray";
+					context.fillRect(L[n].Xkoordinata, L[n].Ykoordinata,L[n].sirina, 30);
+					context.fillStyle = "black";
+					context.font = "12pt Verdana";
+					context.fillText(L[n].ime ,L[n].Xkoordinata+5,L[n].Ykoordinata+20)
+					context.fillStyle = "#FF0000";
+					context.fillRect(L[n].Xkoordinata + L[n].sirina -30 ,L[n].Ykoordinata,30,30);
+					context.fillStyle = "black";
+					context.font = "30pt Verdana";
+					context.fillText("x ",L[n].Xkoordinata + L[n].sirina -25 ,L[n].Ykoordinata+25)
+					context.stroke();
+				}
+	
+			}
+			if( i > 0)
+			{
+				if(L[i-1].sirina >= 30 && L[i-1].visina >= 30)		//provjera za crtanje 
+				{
+					drawRec(position.x, position.y);
+				}
+			}
+			else
+			{
+				drawRec(position.x, position.y);			//ako je sve u redu, crtaj
+			}	
+		}			
+	}
+    
+});
+	
+</script>
+
+</body>
+</html>
